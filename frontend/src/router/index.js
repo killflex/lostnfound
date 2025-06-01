@@ -10,12 +10,13 @@ import App from '@/layouts/App.vue'
 import AppDashboard from '@/views/app/Dashboard.vue'
 import AppTicketDetail from '@/views/app/TicketDetail.vue'
 import AppTicketCreate from '@/views/app/TicketCreate.vue'
-import Register from '@/views/auth/Register.vue'
+import RegisterView from '@/views/auth/RegisterView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     { path: "/login", name: "login", component: LoginView },
+    { path: "/register", name: "register", component: RegisterView },
     {
       path: '/',
       component: App,
@@ -87,11 +88,11 @@ const router = createRouter({
         //   name: 'login',
         //   component: Login,
         // },
-        {
-          path: 'register',
-          name: 'register',
-          component: Register,
-        },
+        // {
+        //   path: 'register',
+        //   name: 'register',
+        //   component: Register,
+        // },
       ],
     },
   ],

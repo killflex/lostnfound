@@ -29,6 +29,7 @@
 </template>
 
 <script setup>
+
   import { ref } from 'vue';
 
   const email = ref('');
@@ -44,14 +45,17 @@
     console.log('Login Data (JSON):', jsonData);
     submittedData.value = jsonData;
   };
+
 </script>
 
 <style scoped>
+
   .font-inter {
     font-family: 'Inter', sans-serif;
   }
-  
+
   input[type="email"], input[type="password"] {
     transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
   }
+  
 </style>
