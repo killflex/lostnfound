@@ -4,7 +4,7 @@ import { useAuthStore } from '@/stores/auth'
 import Dashboard from '@/views/admin/Dashboard.vue'
 import TicketList from '@/views/admin/ticket/TicketList.vue'
 import TicketDetail from '@/views/admin/ticket/TicketDetail.vue'
-import Login from '@/views/auth/Login.vue'
+import LoginView from '@/views/auth/LoginView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import App from '@/layouts/App.vue'
 import AppDashboard from '@/views/app/Dashboard.vue'
@@ -15,6 +15,7 @@ import Register from '@/views/auth/Register.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    { path: "/login", name: "login", component: LoginView },
     {
       path: '/',
       component: App,
@@ -81,11 +82,11 @@ const router = createRouter({
       path: '/auth',
       component: Auth,
       children: [
-        {
-          path: 'login',
-          name: 'login',
-          component: Login,
-        },
+        // {
+        //   path: 'login',
+        //   name: 'login',
+        //   component: Login,
+        // },
         {
           path: 'register',
           name: 'register',
