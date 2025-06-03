@@ -1,4 +1,5 @@
 <template>
+
   <div class="min-h-screen flex items-center justify-center bg-gray-100 p-4 font-inter">
     <div class="bg-white p-8 rounded-xl shadow-xl w-full max-w-md">
       <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Welcome Back!</h2>
@@ -16,16 +17,13 @@
         </div>
         <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 shadow-md hover:shadow-lg">Login</button>
       </form>
-      <div v-if="submittedData" class="mt-8 p-4 bg-gray-50 rounded-lg border border-gray-200 shadow-sm">
-        <h3 class="text-md font-semibold text-gray-700 mb-2">Submitted Data (JSON):</h3>
-        <pre class="text-sm text-gray-600 bg-white p-3 rounded-md overflow-x-auto">{{ submittedData }}</pre>
-      </div>
       <p class="text-center text-sm text-gray-600 mt-8">
         Don't have an account?
         <a href="#" class="font-semibold text-blue-600 hover:text-blue-800 hover:underline">Sign Up</a>
       </p>
     </div>
   </div>
+
 </template>
 
 <script setup>
@@ -34,7 +32,6 @@
 
   const email = ref('');
   const password = ref('');
-  const submittedData = ref(null);
 
   const handleSubmit = () => {
     const loginCredentials = {
@@ -43,7 +40,6 @@
     };
     const jsonData = JSON.stringify(loginCredentials, null, 2);
     console.log('Login Data (JSON):', jsonData);
-    submittedData.value = jsonData;
   };
 
 </script>

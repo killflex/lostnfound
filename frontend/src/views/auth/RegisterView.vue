@@ -23,10 +23,6 @@
         <div v-if="passwordError" class="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded-lg text-sm">{{ passwordError }}</div>
         <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 shadow-md hover:shadow-lg">Register</button>
       </form>
-      <div v-if="submittedData" class="mt-8 p-4 bg-gray-50 rounded-lg border border-gray-200 shadow-sm">
-        <h3 class="text-md font-semibold text-gray-700 mb-2">Submitted Data (JSON):</h3>
-        <pre class="text-sm text-gray-600 bg-white p-3 rounded-md overflow-x-auto">{{ submittedData }}</pre>
-      </div>
       <p class="text-center text-sm text-gray-600 mt-8">
         Already have an account?
         <a href="#" class="font-semibold text-blue-600 hover:text-blue-800 hover:underline">Login</a>
@@ -44,12 +40,10 @@
 	const email = ref('');
 	const password = ref('');
 	const passwordConfirmation = ref('');
-	const submittedData = ref(null);
 	const passwordError = ref('');
 
 	const handleSubmit = () => {
 	  passwordError.value = '';
-	  submittedData.value = null;
 
 	  if (password.value !== passwordConfirmation.value) {
 	    passwordError.value = 'Passwords do not match. Please try again.';
@@ -60,7 +54,6 @@
 	  const jsonData = JSON.stringify(registrationDetails, null, 2);
 
 	  console.log('Registration Data (JSON):', jsonData);
-	  submittedData.value = jsonData;
 	};
 
 </script>
