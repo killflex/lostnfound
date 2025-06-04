@@ -25,7 +25,7 @@
       </form>
       <p class="text-center text-sm text-gray-600 mt-8">
         Already have an account?
-        <a href="#" class="font-semibold text-blue-600 hover:text-blue-800 hover:underline">Login</a>
+        <RouterLink :to="{ name: 'login' }" class="font-semibold text-blue-600 hover:text-blue-800 hover:underline">Login</RouterLink>
       </p>
     </div>
   </div>
@@ -42,18 +42,35 @@
 	const passwordConfirmation = ref('');
 	const passwordError = ref('');
 
-	const handleSubmit = () => {
-	  passwordError.value = '';
+	const handleSubmit = async () => {
+    try {
+	    passwordError.value = '';
 
-	  if (password.value !== passwordConfirmation.value) {
-	    passwordError.value = 'Passwords do not match. Please try again.';
-	    return;
-	  }
+	    if (password.value !== passwordConfirmation.value) {
+	      passwordError.value = 'Passwords do not match. Please try again.';
+	      return;
+	    }
 
-	  const registrationDetails = { name: name.value, email: email.value, password: password.value, password_confirmation: passwordConfirmation.value };
-	  const jsonData = JSON.stringify(registrationDetails, null, 2);
+	    const registrationDetails = { name: name.value, email: email.value, password: password.value, password_confirmation: passwordConfirmation.value };
+	    const jsonData = JSON.stringify(registrationDetails);
 
-	  console.log('Registration Data (JSON):', jsonData);
+	    const response = await fetch("http://127.0.0.1:8000/api/register", {
+        method: "POST",
+        headers: {"Content-Type": "application/json", "accept": "application/json"},
+        body: jsonData
+      });
+
+      // const responseData = await response.json();
+
+      if (response.ok) {
+        alert("Register Success");
+      } else {
+        alert("Register Failed");
+      }
+    } catch (error) {
+      alert("System Error");
+    }
+
 	};
 
 </script>

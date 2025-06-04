@@ -19,7 +19,7 @@
       </form>
       <p class="text-center text-sm text-gray-600 mt-8">
         Don't have an account?
-        <a href="#" class="font-semibold text-blue-600 hover:text-blue-800 hover:underline">Sign Up</a>
+        <RouterLink :to="{ name: 'register' }" class="font-semibold text-blue-600 hover:text-blue-800 hover:underline">Sign Up</RouterLink>
       </p>
     </div>
   </div>
