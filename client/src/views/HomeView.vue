@@ -1,0 +1,5 @@
+<template>
+
+  Home View
+
+</template>
