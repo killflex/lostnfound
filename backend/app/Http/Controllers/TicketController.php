@@ -32,7 +32,7 @@ class TicketController extends Controller
                 $query->where('priority', $request->priority);
             }
 
-            if (auth()->user()->role = 'user') {
+            if (auth()->user()->role == 'user') {
                 $query->where('user_id', auth()->user()->id);
             }
 
@@ -48,6 +48,7 @@ class TicketController extends Controller
             return response()->json([
                 'message' => 'Terjadi Kesalahan',
                 'error' => $e->getMessage(),
+                'data' => null
             ], 500);
         }
     }
