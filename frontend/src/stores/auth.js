@@ -49,11 +49,15 @@ export const useAuthStore = defineStore("auth", {
 
         this.success = response.data.message;
 
-        const token = response.data.data.token;
+        // Ku comment karena backend register gk ngasih token, kode di bawah bikin error
+        // const token = response.data.data.token;
 
-        Cookies.set("token", token);
+        // Cookies.set("token", token);
 
-        router.push({ name: "app.dashboard" });
+        // router.push({ name: "app.dashboard" });
+
+        router.push({ name: "login" });
+        alert("Register Success");
       } catch (error) {
         this.error = handleError(error);
       } finally {

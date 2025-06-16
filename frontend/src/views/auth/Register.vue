@@ -11,19 +11,13 @@ const form = ref({
   name: "",
   email: "",
   password: "",
+  password_confirmation: ""
 });
 
 const handleSubmit = async () => {
   await register(form.value);
 };
 
-const togglePassword = () => {
-  // Your code here
-};
-
-const toggleConfirmPassword = () => {
-  // Your code here
-};
 </script>
 
 <template>
@@ -112,6 +106,37 @@ const toggleConfirmPassword = () => {
           </div>
           <p class="mt-1 text-xs text-red-500" v-if="error?.password">
             {{ error?.password?.join(", ") }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Password Confirmation -->
+      <div>
+        <label for="password-confirmation" class="block text-sm font-medium text-gray-700"
+          >Password Confirmation</label
+        >
+        <div class="mt-1 relative">
+          <input
+            v-model="form.password_confirmation"
+            type="password"
+            id="password-confirmation"
+            name="password-confirmation"
+            class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            :class="{
+              'border-red-500 ring-red-500': error?.password_confirmation,
+            }"
+            placeholder="••••••••"
+          />
+          <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+            <button
+              type="button"
+              class="text-gray-400 hover:text-gray-600 focus:outline-none"
+            >
+              <i data-feather="eye" class="w-4 h-4" id="password-toggle"></i>
+            </button>
+          </div>
+          <p class="mt-1 text-xs text-red-500" v-if="error?.password_confirmation">
+            {{ error?.password_confirmation?.join(", ") }}
           </p>
         </div>
       </div>
