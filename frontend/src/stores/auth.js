@@ -25,6 +25,8 @@ export const useAuthStore = defineStore("auth", {
         const response = await axiosInstance.post("/login", credentials);
         const token = response.data.data.token;
 
+        console.log(token);
+
         Cookies.set("token", token);
 
         this.success = response.data.message;

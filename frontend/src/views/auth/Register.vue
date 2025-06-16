@@ -113,7 +113,7 @@ const handleSubmit = async () => {
       <!-- Password Confirmation -->
       <div>
         <label for="password-confirmation" class="block text-sm font-medium text-gray-700"
-          >Password Confirmation</label
+          >Konfirmasi Password</label
         >
         <div class="mt-1 relative">
           <input
