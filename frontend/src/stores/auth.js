@@ -23,15 +23,14 @@ export const useAuthStore = defineStore("auth", {
 
       try {
         const response = await axiosInstance.post("/login", credentials);
-        const token = response.data.data.token;
-
-        console.log(token);
+        const token = response.data.token;
+        const role = response.data.role;
 
         Cookies.set("token", token);
 
         this.success = response.data.message;
 
-        if (response.data.data.user.role === "admin") {
+        if (role === "admin") {
           router.push({ name: "admin.dashboard" });
         } else {
           router.push({ name: "app.dashboard" });

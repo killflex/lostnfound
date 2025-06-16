@@ -21,7 +21,6 @@ const handleSubmit = async () => {
   }
 };
 
-const togglePassword = () => {};
 </script>
 
 <template>
