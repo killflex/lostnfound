@@ -1,6 +1,3 @@
-Sure, here is the code with comments removed:
-
-Copy
 <template>
   <div class="user-list-container">
     <div v-for="user in userList" :key="user.id" class="user-card">
