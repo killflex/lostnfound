@@ -2,8 +2,8 @@ import Admin from '@/layouts/Admin.vue'
 import Auth from '@/layouts/Auth.vue'
 import { useAuthStore } from '@/stores/auth'
 import Dashboard from '@/views/admin/Dashboard.vue'
-import TicketList from '@/views/admin/ticket/TicketList.vue'
-import TicketDetail from '@/views/admin/ticket/TicketDetail.vue'
+// import TicketList from '@/views/admin/ticket/TicketList.vue'
+// import TicketDetail from '@/views/admin/ticket/TicketDetail.vue'
 import Login from '@/views/auth/Login.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import App from '@/layouts/App.vue'
@@ -57,24 +57,24 @@ const router = createRouter({
             title: 'Dashboard',
           },
         },
-        {
-          path: 'ticket',
-          name: 'admin.ticket',
-          component: TicketList,
-          meta: {
-            requiresAuth: true,
-            title: 'Ticket',
-          },
-        },
-        {
-          path: 'ticket/:code',
-          name: 'admin.ticket.detail',
-          component: TicketDetail,
-          meta: {
-            requiresAuth: true,
-            title: 'Ticket Detail',
-          },
-        },
+        // {
+        //   path: 'ticket',
+        //   name: 'admin.ticket',
+        //   component: TicketList,
+        //   meta: {
+        //     requiresAuth: true,
+        //     title: 'Ticket',
+        //   },
+        // },
+        // {
+        //   path: 'ticket/:code',
+        //   name: 'admin.ticket.detail',
+        //   component: TicketDetail,
+        //   meta: {
+        //     requiresAuth: true,
+        //     title: 'Ticket Detail',
+        //   },
+        // },
       ],
     },
     {

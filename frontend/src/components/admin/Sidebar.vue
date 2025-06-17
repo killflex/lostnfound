@@ -29,7 +29,7 @@ const handleLogout = async () => {
         <i data-feather="home" class="w-5 h-5 mr-3"></i>
         Dashboard
       </RouterLink>
-      <RouterLink
+      <!-- <RouterLink
         :to="{ name: 'admin.ticket' }"
         class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 hover:border-l-4 hover:border-gray-200"
         :class="{
@@ -39,7 +39,7 @@ const handleLogout = async () => {
       >
         <i data-feather="tag" class="w-5 h-5 mr-3"></i>
         Tiket
-      </RouterLink>
+      </RouterLink> -->
       <a
         @click="handleLogout"
         class="flex items-center px-6 py-3 text-gray-600 cursor-pointer hover:bg-gray-50 hover:border-l-4 hover:border-gray-200 mt-6"
