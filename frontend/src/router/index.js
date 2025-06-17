@@ -1,124 +1,133 @@
-import Admin from '@/layouts/Admin.vue'
-import Auth from '@/layouts/Auth.vue'
-import { useAuthStore } from '@/stores/auth'
-import Dashboard from '@/views/admin/Dashboard.vue'
-// import TicketList from '@/views/admin/ticket/TicketList.vue'
-// import TicketDetail from '@/views/admin/ticket/TicketDetail.vue'
-import Login from '@/views/auth/Login.vue'
-import { createRouter, createWebHistory } from 'vue-router'
-import App from '@/layouts/App.vue'
-import AppDashboard from '@/views/app/Dashboard.vue'
-import AppTicketDetail from '@/views/app/TicketDetail.vue'
-import AppTicketCreate from '@/views/app/TicketCreate.vue'
-import Register from '@/views/auth/Register.vue'
+import Admin from "@/layouts/Admin.vue";
+import Auth from "@/layouts/Auth.vue";
+import { useAuthStore } from "@/stores/auth";
+import Dashboard from "@/views/admin/Dashboard.vue";
+import TicketList from "@/views/admin/ticket/TicketList.vue";
+import TicketDetail from "@/views/admin/ticket/TicketDetail.vue";
+import Login from "@/views/auth/Login.vue";
+import { createRouter, createWebHistory } from "vue-router";
+import App from "@/layouts/App.vue";
+import AppDashboard from "@/views/app/Dashboard.vue";
+import AppTicketDetail from "@/views/app/TicketDetail.vue";
+import AppTicketEdit from "@/views/app/TicketEdit.vue";
+import AppTicketCreate from "@/views/app/TicketCreate.vue";
+import Register from "@/views/auth/Register.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
+      path: "/",
       component: App,
       children: [
         {
-          path: '',
-          name: 'app.dashboard',
+          path: "",
+          name: "app.dashboard",
           component: AppDashboard,
           meta: {
             requiresAuth: true,
-            title: 'Dashboard',
+            title: "Dashboard",
           },
         },
         {
-          path: 'ticket/:code',
-          name: 'app.ticket.detail',
+          path: "ticket/:code",
+          name: "app.ticket.detail",
           component: AppTicketDetail,
           meta: {
             requiresAuth: true,
-            title: 'Ticket Detail',
+            title: "Ticket Detail",
           },
         },
         {
-          path: 'ticket/create',
-          name: 'app.ticket.create',
+          path: "ticket/:code/edit",
+          name: "app.ticket.edit",
+          component: AppTicketEdit,
+          meta: {
+            requiresAuth: true,
+            title: "Ticket Edit",
+          },
+        },
+        {
+          path: "ticket/create",
+          name: "app.ticket.create",
           component: AppTicketCreate,
         },
       ],
     },
     {
-      path: '/admin',
+      path: "/admin",
       component: Admin,
       children: [
         {
-          path: 'dashboard',
-          name: 'admin.dashboard',
+          path: "dashboard",
+          name: "admin.dashboard",
           component: Dashboard,
           meta: {
             requiresAuth: true,
-            title: 'Dashboard',
+            title: "Dashboard",
           },
         },
-        // {
-        //   path: 'ticket',
-        //   name: 'admin.ticket',
-        //   component: TicketList,
-        //   meta: {
-        //     requiresAuth: true,
-        //     title: 'Ticket',
-        //   },
-        // },
-        // {
-        //   path: 'ticket/:code',
-        //   name: 'admin.ticket.detail',
-        //   component: TicketDetail,
-        //   meta: {
-        //     requiresAuth: true,
-        //     title: 'Ticket Detail',
-        //   },
-        // },
+        {
+          path: "ticket",
+          name: "admin.ticket",
+          component: TicketList,
+          meta: {
+            requiresAuth: true,
+            title: "Ticket",
+          },
+        },
+        {
+          path: "ticket/:code",
+          name: "admin.ticket.detail",
+          component: TicketDetail,
+          meta: {
+            requiresAuth: true,
+            title: "Ticket Detail",
+          },
+        },
       ],
     },
     {
-      path: '/auth',
+      path: "/auth",
       component: Auth,
       children: [
         {
-          path: 'login',
-          name: 'login',
+          path: "login",
+          name: "login",
           component: Login,
         },
         {
-          path: 'register',
-          name: 'register',
+          path: "register",
+          name: "register",
           component: Register,
         },
       ],
     },
   ],
-})
+});
 
 router.beforeEach(async (to, from, next) => {
-  const authStore = useAuthStore()
+  const authStore = useAuthStore();
 
   if (to.meta.requiresAuth) {
     if (authStore.token) {
       try {
         if (!authStore.user) {
-          await authStore.checkAuth()
+          await authStore.checkAuth();
         }
 
-        next()
+        next();
       } catch (error) {
-        next({ name: 'login' })
+        next({ name: "login" });
       }
     } else {
-      next({ name: 'login' })
+      next({ name: "login" });
     }
   } else if (to.meta.requiresUnauth && authStore.token) {
-    next({ name: 'dashboard' })
+    next({ name: "dashboard" });
   } else {
-    next()
+    next();
   }
-})
+});
 
-
-export default router
+export default router;

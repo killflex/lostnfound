@@ -81,12 +81,35 @@ export const useAuthStore = defineStore("auth", {
     },
 
     async checkAuth() {
-      // TODO: Implement checkAuth action
-      // Steps:
-      // 1. Set loading state
-      // 2. Make API call to get user data
-      // 3. Update user state
-      // 4. Handle unauthorized error
+      if (!this.token) {
+        this.user = null;
+        return false;
+      }
+
+      this.loading = true;
+      this.error = null;
+
+      try {
+        const response = await axiosInstance.get("/user");
+        this.user = response.data;
+        return true;
+      } catch (error) {
+        this.error = handleError(error);
+        this.user = null;
+        Cookies.remove("token");
+
+        if (error.response?.status === 401) {
+          router.push({
+            name: "login",
+            query: {
+              redirect: router.currentRoute.value.fullPath,
+            },
+          });
+        }
+        return false;
+      } finally {
+        this.loading = false;
+      }
     },
   },
 });
