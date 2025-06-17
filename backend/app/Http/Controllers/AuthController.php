@@ -64,8 +64,6 @@ class AuthController extends Controller
                 'message' => "Logout Berhasil",
                 'data' => null
             ], 200);
-
-
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Terjadi Kesalahan',

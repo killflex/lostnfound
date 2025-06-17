@@ -9,31 +9,25 @@ use Carbon\Carbon;
 use App\Http\Resources\DashboardResource;
 
 class DashboardController extends Controller {
-    public function getStatistics(Request $request){
-        $currentMonth = Carbon::now()->startOfMonth();
-        $endOfMonth = $currentMonth->copy()->endOfMonth();
+    public function getStatistics(){
+        $totalTickets = Ticket::count();
 
-        $totalTickets = Ticket::whereBetween('created_at', [$currentMonth, $endOfMonth])->count();
-
-        $activeTickets = Ticket::whereBetween('created_at', [$currentMonth, $endOfMonth])
-            ->where('status', '!=', 'closed')
+        $activeTickets = Ticket::where('status', '!=', 'closed')
             ->count();
 
-        $resolvedTickets = Ticket::whereBetween('created_at', [$currentMonth, $endOfMonth])
-            ->where('status', 'resolved')
+        $resolvedTickets = Ticket::where('status', 'resolved')
             ->count();
 
-        $avgresolutionTime = Ticket::whereBetween('created_at', [$currentMonth, $endOfMonth])
-            ->where('status', 'resolved')
+        $avgresolutionTime = Ticket::where('status', 'resolved')
             ->whereNotNull('completed_at')
             ->select(DB::raw('AVG(TIMESTAMPDIFF(HOUR, created_at, completed_at)) as avg_time'))
             ->value('avg_time') ?? 0;
 
         $statusDistribution = [
-            'open' => Ticket::whereBetween('created_at', [$currentMonth, $endOfMonth])->where('status', 'open')->count(),
-            'onprogress' => Ticket::whereBetween('created_at', [$currentMonth, $endOfMonth])->where('status', 'onprogress')->count(),
-            'resolved' => Ticket::whereBetween('created_at', [$currentMonth, $endOfMonth])->where('status', 'resolved')->count(),
-            'rejected' => Ticket::whereBetween('created_at', [$currentMonth, $endOfMonth])->where('status', 'rejected')->count(),
+            'open' => Ticket::where('status', 'open')->count(),
+            'onprogress' => Ticket::where('status', 'onprogress')->count(),
+            'resolved' => Ticket::where('status', 'resolved')->count(),
+            'rejected' => Ticket::where('status', 'rejected')->count(),
         ];
 
         $dashboardData = [
@@ -43,7 +37,6 @@ class DashboardController extends Controller {
             'avg_resolution_time' => round($avgresolutionTime, 1),
             'status_distribution' => $statusDistribution,
         ];
-
 
         return response()->json([
             'message' => 'Dashboard statistics retrieved successfully',
