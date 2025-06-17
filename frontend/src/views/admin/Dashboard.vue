@@ -29,15 +29,15 @@
       </div>
 
       <div class="action-buttons">
-        <template v-if="!user.isEditing">
-          <button @click="startEdit(user)" class="edit-button">Edit</button>
+        <div v-if="!user.isEditing">
+          <button @click="startEdit(user)" class="edit-button me-2">Edit</button>
           <button @click.prevent="deleteUser(user.id)" class="delete-button">Delete</button>
-        </template>
+        </div>
 
-        <template v-else>
-          <button @click="saveUser(user)" class="save-button">Save</button>
+        <div v-else>
+          <button @click="saveUser(user)" class="save-button me-2">Save</button>
           <button @click="cancelEdit(user)" class="cancel-button">Cancel</button>
-        </template>
+        </div>
       </div>
     </div>
   </div>
