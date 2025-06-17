@@ -2,104 +2,66 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\RegisterStoreRequest;
-use App\Http\Resources\UserResource;
-use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthController extends Controller
 {
-    public function login(Request $request){
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'user',
+        ]);
+
+        return response()->json(['message' => 'User registered successfully'], 201);
+    }
+
+    public function login(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+
         try {
-            if(!Auth::guard('web')->attempt($request->only('email', 'password'))){
-                return response()->json([
-                    'message' => "Unauthorized",
-                    'data' => null,
-                ], 401);
+            if (!$token = JWTAuth::attempt($credentials)) {
+                return response()->json(['error' => 'Invalid email or password'], 401);
             }
-
-            $user = Auth::user();
-            $token = $user->createToken('auth_token')->plainTextToken;
-
-            return response()->json([
-                    'message' => "Login Successful",
-                    'data' => [
-                        'token' => $token,
-                        'user' => $user,
-                    ],
-                ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                    'message' => "Terjadi kesalahan",
-                    'error' => $e->getMessage(),
-                ], 500);
+        } catch (JWTException $e) {
+            return response()->json(['error' => 'Could not create token'], 500);
         }
+
+        $user = auth()->user();
+        $ttlMinutes = JWTAuth::factory()->getTTL();
+        $expiresIn  = $ttlMinutes * 60;
+        $expiredAt  = Carbon::now()->addSeconds($expiresIn);
+
+        return response()->json([
+            'token' => $token,
+            'expires_in' => $expiresIn,
+            'expires_at' => $expiredAt->toIso8601String(),
+            'role' => $user->role,
+            'message' => 'Login successful as ' . $user->role,
+        ]);
     }
 
-    public function me(){
+    public function logout()
+    {
         try {
-            $user = Auth::user();
-
-            return response()->json([
-                'message' => 'Profile User Berhasil Diambil',
-                'data' => new UserResource($user),
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Terjadi kesalahan',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    public function logout(){
-        try {
-            $user = Auth::user();
-            $user->currentAccessToken()->delete();
-
-            return response()->json([
-                'message' => "Logout Berhasil",
-                'data' => null
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Terjadi Kesalahan',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    public function register(RegisterStoreRequest $request){
-        
-        $data = $request->validated();
-        DB::beginTransaction();
-
-        try {
-            $user = new User();
-            $user->name = $data['name'];
-            $user->email = $data['email'];
-            $user->password = Hash::make($data['password']);
-            $user->save();
-
-            $token = $user->createToken('auth_token')->plainTextToken;
-
-            DB::commit();
-
-            return response()->json([
-                'message' => 'Registrasi berhasil',
-                'data' => [
-                    'token' => $token,
-                    'user' => new UserResource($user)
-                ]
-            ], 201);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Terjadi Kesalahan',
-                'error' => $e->getMessage(),
-            ], 500);
+            JWTAuth::invalidate(JWTAuth::getToken());
+            return response()->json(['message' => 'Successfully logged out'], 200);
+        } catch (JWTException $e) {
+            return response()->json(['error' => 'Failed to logout, please try again'], 500);
         }
     }
 }

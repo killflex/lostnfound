@@ -20,7 +20,6 @@ const handleSubmit = async () => {
     alert("Email atau password salah. Silakan coba lagi.");
   }
 };
-
 </script>
 
 <template>
@@ -32,7 +31,6 @@ const handleSubmit = async () => {
           >Email</label
         >
         <div class="mt-1 relative">
-          <!-- TODO: Add v-model binding for email -->
           <input
             v-model="form.email"
             type="email"

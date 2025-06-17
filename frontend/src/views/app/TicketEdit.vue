@@ -3,21 +3,47 @@ import { onMounted, ref } from "vue";
 import { useTicketStore } from "@/stores/ticket";
 import { storeToRefs } from "pinia";
 import feather from "feather-icons";
+import { useRoute, useRouter } from "vue-router";
+
+const route = useRoute();
+const router = useRouter();
 
 const ticketStore = useTicketStore();
 const { success, error, loading } = storeToRefs(ticketStore);
-const { createTicket } = ticketStore;
+const { fetchTicket, editTicket } = ticketStore;
 
+const ticket = ref({});
 const form = ref({
   name: "",
   description: "",
   image: null,
   location: "",
-  type: "lost",
-  status: "pending",
+  type: "",
+  status: "",
 });
 
 const previewUrl = ref(null);
+
+// Fetch existing ticket data
+const fetchTicketDetail = async () => {
+  try {
+    const response = await fetchTicket(route.params.code);
+    form.value = {
+      name: response.name,
+      description: response.description,
+      location: response.location,
+      type: response.type,
+      status: response.status,
+      image: null,
+    };
+
+    console.log(response);
+
+    previewUrl.value = response.image;
+  } catch (error) {
+    console.error("Error fetching ticket:", error);
+  }
+};
 
 // Add new method to handle file changes
 const handleFileUpload = (event) => {
@@ -25,49 +51,55 @@ const handleFileUpload = (event) => {
   if (file) {
     form.value.image = file;
     previewUrl.value = URL.createObjectURL(file);
-    // Reset the input value to allow re-uploading the same file
   }
 };
 
+const formErrors = ref({});
+
 const handleSubmit = async () => {
   try {
+    formErrors.value = {};
     const formData = new FormData();
 
-    // Append all form fields
-    formData.append("name", form.value.name);
-    formData.append("description", form.value.description);
-    formData.append("location", form.value.location);
-    formData.append("type", form.value.type);
-    formData.append("status", form.value.status);
-
-    // Append image if exists
+    // Only append fields that have values
+    if (form.value.name) {
+      formData.append("name", form.value.name);
+    }
+    if (form.value.description) {
+      formData.append("description", form.value.description);
+    }
+    if (form.value.location) {
+      formData.append("location", form.value.location);
+    }
+    if (form.value.type) {
+      formData.append("type", form.value.type);
+    }
+    if (form.value.status) {
+      formData.append("status", form.value.status);
+    }
+    // Append image only if a new one is selected
     if (form.value.image) {
       formData.append("image", form.value.image);
     }
 
-    await createTicket(formData);
+    await editTicket(route.params.code, formData);
 
-    // Only reset form if no errors
     if (!error.value) {
-      form.value = {
-        name: "",
-        description: "",
-        image: null,
-        location: "",
-        type: "lost",
-        status: "pending",
-      };
-      previewUrl.value = null;
+      router.push({
+        name: "app.ticket.detail",
+        params: { code: route.params.code },
+      });
     }
-  } catch (error) {
+  } catch (err) {
+    if (err.response?.data?.errors) {
+      formErrors.value = err.response.data.errors;
+    }
     console.error("Form submission error:", err);
   }
 };
 
 onMounted(async () => {
-  if (previewUrl.value) {
-    URL.revokeObjectURL(previewUrl.value);
-  }
+  await fetchTicketDetail();
   feather.replace();
 });
 </script>
@@ -94,10 +126,8 @@ onMounted(async () => {
     <!-- Create Ticket Form -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-100">
       <div class="p-6 border-b border-gray-100">
-        <h1 class="text-2xl font-bold text-gray-800">Buat Laporan Baru</h1>
-        <p class="text-sm text-gray-500 mt-1">
-          Isi form di bawah ini untuk membuat laporan baru
-        </p>
+        <h1 class="text-2xl font-bold text-gray-800">Edit Laporan</h1>
+        <p class="text-sm text-gray-500 mt-1">Ubah informasi laporan Anda</p>
       </div>
 
       <form @submit.prevent="handleSubmit" class="p-6 space-y-6">
@@ -349,7 +379,7 @@ onMounted(async () => {
         <!-- Submit Button -->
         <div class="flex justify-end space-x-4">
           <RouterLink
-            :to="{ name: 'app.dashboard' }"
+            :to="{ name: 'app.ticket.detail', params: { code: ticket.id } }"
             class="px-6 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50"
           >
             Batal
@@ -359,7 +389,7 @@ onMounted(async () => {
             class="px-6 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700"
           >
             <i data-feather="send" class="w-4 h-4 inline-block mr-2"></i>
-            <span v-if="!loading">Kirim Jawaban</span>
+            <span v-if="!loading">Simpan Perubahan</span>
             <span v-else>Loading...</span>
           </button>
         </div>

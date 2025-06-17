@@ -1,22 +1,25 @@
 <?php
 
+use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\TicketController;
-use App\Http\Controllers\DashboardController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\ItemController;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']);
+Route::post('register', [AuthController::class, 'register']);
+Route::post('login', [AuthController::class, 'login']);
 
-Route::middleware('auth:sanctum')->group(function(){
-    Route::get('/me', [AuthController::class, 'me']);
-    Route::post('/logout', [AuthController::class, 'logout']);
+Route::prefix('admin')->middleware(['auth:api', 'admin'])->group(function () {
+    Route::apiResource('user', UserManagementController::class)->only('index', 'destroy');
+});
 
-    Route::get('/dashboard/statistics', [DashboardController::class, 'getStatistics']);
-
-    Route::get('/ticket', [TicketController::class, 'index']);
-    Route::get('/ticket/{code}', [TicketController::class, 'show']);
-    Route::post('/ticket', [TicketController::class, 'store']);
-    Route::post('/ticket-reply/{code}', [TicketController::class, 'storeReply']);
+Route::middleware(['auth:api'])->group(function () {
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::put('user', [UserManagementController::class, 'update']);
+    Route::get('user', [UserManagementController::class, 'show']);
+    Route::post('item/{item}/status', [ItemController::class, 'updateStatus']);
+    Route::get('item/{id}/chat', [ChatController::class, 'showCommentsByItem']);
+    Route::post('chat/{id}', [ChatController::class, 'store']);
+    Route::apiResource('item', ItemController::class);
+    Route::apiResource('chat' , ChatController::class);
 });
