@@ -41,9 +41,9 @@ onMounted(async () => {
   <div>
     <div class="flex items-center justify-between mb-8">
       <div>
-        <h1 class="text-2xl font-bold text-gray-800">Tiket Saya</h1>
+        <h1 class="text-2xl font-bold text-gray-800">Laporan Barang</h1>
         <p class="text-sm text-gray-500 mt-1">
-          Kelola dan pantau status tiket Anda
+          Kelola dan pantau laporan
         </p>
       </div>
       <RouterLink
@@ -51,7 +51,7 @@ onMounted(async () => {
         class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
       >
         <i data-feather="plus" class="w-4 h-4 mr-2"></i>
-        Buat Tiket Baru
+        Buat Laporan
       </RouterLink>
     </div>
 
@@ -76,7 +76,7 @@ onMounted(async () => {
           <div class="relative">
             <input
               type="text"
-              placeholder="Cari tiket..."
+              placeholder="Cari laporan..."
               v-model="filters.search"
               class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
@@ -89,20 +89,17 @@ onMounted(async () => {
             v-model="filters.status"
             class="border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           >
-            <option value="">Semua Status</option>
-            <option value="open">Open</option>
-            <option value="onprogress">In Progress</option>
-            <option value="resolved">Resolved</option>
-            <option value="rejected">Rejected</option>
+            <option value="">Status Postingan</option>
+            <option value="lost">Barang Hilang</option>
+            <option value="found">Barang Temuan</option>
           </select>
           <select
             v-model="filters.priority"
             class="border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           >
-            <option value="">Semua Prioritas</option>
-            <option value="low">Rendah</option>
-            <option value="medium">Sedang</option>
-            <option value="high">Tinggi</option>
+            <option value="">Status Barang</option>
+            <option value="pending">Dalam Pencarian</option>
+            <option value="resolved">Kasus Terselesaikan</option>
           </select>
           <select
             v-model="filters.date"
@@ -122,9 +119,9 @@ onMounted(async () => {
       <div
         class="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
         v-for="ticket in tickets"
-        :key="ticket.cide"
+        :key="ticket.id"
       >
-        <RouterLink
+        <!-- <RouterLink
           :to="{ name: 'app.ticket.detail', params: { code: ticket.code } }"
           class="block p-6"
         >
@@ -190,7 +187,70 @@ onMounted(async () => {
               <i data-feather="chevron-right" class="w-5 h-5 text-gray-400"></i>
             </div>
           </div>
-        </RouterLink>
+        </RouterLink> -->
+
+        <a href="" class="block p-6">
+          <div class="flex items-start justify-between">
+            <div class="flex ">
+              <img src="https://placehold.co/500x500" alt="" class="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80" />
+              <div class="flex-1">
+                <div class="flex items-center space-x-3">
+                  <h3 class="text-lg font-semibold text-gray-800">
+                    {{ ticket.name }}
+                  </h3>
+                  <span
+                    class="px-3 py-1 text-sm rounded-lg"
+                    :class="{
+                      'text-blue-700 bg-blue-100': ticket.type === 'lost',
+                      'text-green-700 bg-green-100': ticket.type === 'found',
+                    }"
+                  >
+                    {{ capitalize(ticket.type) }}
+                  </span>
+
+                  <span
+                    class="px-3 py-1 text-sm rounded-lg"
+                    :class="{
+                      'text-red-700 bg-red-100': ticket.status === 'pending',
+                      'text-green-700 bg-green-100': ticket.status === 'resolved',
+                    }"
+                  >
+                    {{ capitalize(ticket.status) }}
+                  </span>
+                </div>
+                <p class="text-sm text-gray-500 mt-1">
+                  #{{ ticket.name }} • Dibuat pada
+                  {{
+                    DateTime.fromISO(ticket.created_at).toFormat(
+                      "dd MMMM yyyy, HH:mm"
+                    )
+                  }}
+                </p>
+                <p class="text-sm text-gray-600 mt-2">{{ ticket.description }}</p>
+                <div class="mt-4 flex items-center space-x-4">
+                  <!-- <div class="flex items-center text-sm text-gray-500">
+                    <i data-feather="message-square" class="w-4 h-4 mr-1"></i>
+                    <span>{{ ticket.ticket_replies.length }} balasan</span>
+                  </div> -->
+                  <div class="flex items-center text-sm text-gray-500">
+                    <i data-feather="clock" class="w-4 h-4 mr-1"></i>
+                    <span
+                      >Terakhir diupdate
+                      {{
+                        DateTime.fromISO(ticket.updated_at).toFormat(
+                          "dd MMMM yyyy, HH:mm"
+                        )
+                      }}</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="ml-4">
+              <i data-feather="chevron-right" class="w-5 h-5 text-gray-400"></i>
+            </div>
+          </div>
+        </a>
       </div>
     </div>
   </div>

@@ -76,24 +76,6 @@ const handleSubmit = async () => {
         </div>
       </div>
 
-      <!-- Remember Me & Forgot Password -->
-      <div class="flex items-center justify-between">
-        <div class="flex items-center">
-          <input
-            type="checkbox"
-            id="remember"
-            name="remember"
-            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-          />
-          <label for="remember" class="ml-2 block text-sm text-gray-700"
-            >Ingat saya</label
-          >
-        </div>
-        <a href="#" class="text-sm text-blue-600 hover:text-blue-800"
-          >Lupa password?</a
-        >
-      </div>
-
       <!-- Submit Button -->
       <div>
         <button
