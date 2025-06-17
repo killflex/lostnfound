@@ -1,3 +1,6 @@
+Sure, here is the code with comments removed:
+
+Copy
 <template>
   <div class="user-list-container">
     <div v-for="user in userList" :key="user.id" class="user-card">
@@ -24,22 +27,18 @@ onMounted(() => {
 const getUserList = async () => {
   try {
     const response = await axiosInstance.get("admin/user");
-    // Ensure response.data.data is an array
     userList.value = Array.isArray(response.data.data) ? response.data.data : [];
   } catch (error) {
     console.error("Failed to fetch user list:", error);
-    // Optionally, provide user feedback here
   }
 };
 
 const deleteUser = async (id) => {
   try {
     await axiosInstance.delete(`admin/user/${id}`);
-    // Refresh the list after a successful deletion
     await getUserList();
   } catch (error) {
     console.error(`Failed to delete user with id ${id}:`, error);
-    // Optionally, provide user feedback here
   }
 };
 </script>
@@ -50,20 +49,19 @@ const deleteUser = async (id) => {
   flex-direction: column;
   gap: 1rem;
   padding: 1rem;
-  background-color: #f7fafc;
-  font-family: sans-serif; /* Added for better typography */
+  font-family: sans-serif;
 }
 
 .user-card {
-  display: flex; /* Key Change: Use flexbox for alignment */
-  justify-content: space-between; /* Key Change: Pushes info and button to opposite ends */
-  align-items: center; /* Key Change: Vertically aligns items in the middle */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 0.5rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   padding: 1.5rem;
-  transition: all 0.2s ease-in-out; /* Smoothed transition */
+  transition: all 0.2s ease-in-out;
 }
 
 .user-card:hover {
@@ -73,8 +71,8 @@ const deleteUser = async (id) => {
 
 .user-info {
   display: flex;
-  flex-direction: column; /* Stacks user info vertically */
-  gap: 0.25rem; /* Adds small space between text elements */
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .user-info p {
@@ -99,11 +97,11 @@ const deleteUser = async (id) => {
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
   font-weight: 500;
-  align-self: flex-start; /* Ensures the badge doesn't stretch */
+  align-self: flex-start;
 }
 
 .delete-button {
-  background-color: #ef4444; /* Red color for destructive action */
+  background-color: #ef4444;
   color: white;
   border: none;
   padding: 0.6rem 1.2rem;
@@ -114,6 +112,6 @@ const deleteUser = async (id) => {
 }
 
 .delete-button:hover {
-  background-color: #dc2626; /* Darker red on hover */
+  background-color: #dc2626;
 }
 </style>
