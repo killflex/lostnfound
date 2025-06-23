@@ -12,6 +12,7 @@ import AppTicketDetail from "@/views/app/TicketDetail.vue";
 import AppTicketEdit from "@/views/app/TicketEdit.vue";
 import AppTicketCreate from "@/views/app/TicketCreate.vue";
 import Register from "@/views/auth/Register.vue";
+import AppProfile from "@/views/app/Profile.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -51,6 +52,15 @@ const router = createRouter({
           path: "ticket/create",
           name: "app.ticket.create",
           component: AppTicketCreate,
+        },
+        {
+          path: "profile",
+          name: "app.profile",
+          component: AppProfile,
+          meta: {
+            requiresAuth: true,
+            title: "Profile",
+          },
         },
       ],
     },

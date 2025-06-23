@@ -80,6 +80,22 @@ export const useAuthStore = defineStore("auth", {
       }
     },
 
+    async fetchCurrentUser() {
+      this.loading = true;
+      this.error = null;
+
+      try {
+        const response = await axiosInstance.get("/user");
+
+        return response.data.data;
+      } catch (error) {
+        this.error = handleError(error);
+        this.user = null;
+      } finally {
+        this.loading = false;
+      }
+    },
+
     async checkAuth() {
       if (!this.token) {
         this.user = null;

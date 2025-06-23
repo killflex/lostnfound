@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Http\Controllers\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\Traits\ApiResponse;
+use App\Http\Controllers\Controller;
+
+use App\Http\Requests\UpdateUserRequest;
 
 class UserManagementController extends Controller
 {
@@ -46,15 +48,9 @@ class UserManagementController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function update(UpdateUserRequest $request)
     {
         $user = auth()->user();
-
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:8|confirmed',
-        ]);
 
         $user->name = $request->name;
         $user->email = $request->email;
@@ -66,9 +62,9 @@ class UserManagementController extends Controller
         $user->save();
 
         return $this->successResponse(
-            null,
+            $user,
             'User updated successfully.',
-            201
+            200
         );
     }
 

@@ -54,12 +54,12 @@ const handleLogout = async () => {
               v-if="showUserMenu"
               class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-50"
             >
-              <a
-                href="#"
+              <RouterLink
+                :to="{ name: 'app.profile' }"
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
               >
                 Profil
-              </a>
+              </RouterLink>
               <div class="border-t border-gray-100 my-1"></div>
               <RouterLink
                 :to="{ name: 'login' }"
