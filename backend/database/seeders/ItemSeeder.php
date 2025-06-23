@@ -26,7 +26,7 @@ class ItemSeeder extends Seeder
                     'name'       => "Laporan Barang ({$type}, {$status})",
                     'description'=> "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
                     'location'   => "Lorem Ipsum",
-                    'image'      => "https://res.cloudinary.com/dn2tic45s/image/upload/v1741420350/cld-sample-5.jpg",
+                    'image'      => "This is a placeholder for an image URL",
                     'type'       => $type,
                     'status'     => $status,
                     'created_at' => $now,
