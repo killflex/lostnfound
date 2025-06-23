@@ -28,6 +28,7 @@ const previewUrl = ref(null);
 const fetchTicketDetail = async () => {
   try {
     const response = await fetchTicket(route.params.code);
+
     form.value = {
       name: response.name,
       description: response.description,
@@ -35,11 +36,12 @@ const fetchTicketDetail = async () => {
       type: response.type,
       status: response.status,
       image: null,
+      _method: "put",
     };
 
     console.log(response);
 
-    previewUrl.value = response.image;
+    previewUrl.value = response.image_url;
   } catch (error) {
     console.error("Error fetching ticket:", error);
   }
@@ -59,28 +61,28 @@ const formErrors = ref({});
 const handleSubmit = async () => {
   try {
     formErrors.value = {};
+
     const formData = new FormData();
 
-    // Only append fields that have values
-    if (form.value.name) {
-      formData.append("name", form.value.name);
-    }
-    if (form.value.description) {
-      formData.append("description", form.value.description);
-    }
-    if (form.value.location) {
-      formData.append("location", form.value.location);
-    }
-    if (form.value.type) {
-      formData.append("type", form.value.type);
-    }
-    if (form.value.status) {
-      formData.append("status", form.value.status);
-    }
-    // Append image only if a new one is selected
+    // Pastikan semua field required terisi
+    formData.append("name", form.value.name);
+    formData.append("description", form.value.description);
+    formData.append("location", form.value.location);
+    formData.append("type", form.value.type);
+    formData.append("status", form.value.status);
+    formData.append("_method", "put");
+    // Berikan nilai default
+
+    // Jika ada image baru, gunakan itu
     if (form.value.image) {
       formData.append("image", form.value.image);
     }
+    // Jika tidak ada image baru tapi ada preview (image lama), kirim URL-nya
+    // else if (previewUrl.value) {
+    //   const response = await fetch(previewUrl.value);
+    //   const blob = await response.blob();
+    //   formData.append("image", blob, "existing-image.jpg");
+    // }
 
     await editTicket(route.params.code, formData);
 
@@ -92,7 +94,7 @@ const handleSubmit = async () => {
     }
   } catch (err) {
     if (err.response?.data?.errors) {
-      formErrors.value = err.response.data.errors;
+      error.value = err.response.data.errors;
     }
     console.error("Form submission error:", err);
   }
@@ -106,7 +108,6 @@ onMounted(async () => {
 
 <template>
   <div>
-    <!-- Add error alert at the top of the form -->
     <div
       v-if="error?.general"
       class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg"

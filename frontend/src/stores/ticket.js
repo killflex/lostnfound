@@ -70,7 +70,26 @@ export const useTicketStore = defineStore("ticket", {
         this.loading = true;
         this.error = null;
 
-        const response = await axiosInstance.patch(`item/${code}`, payload, {
+        // Create FormData object for multipart/form-data
+        const formData = new FormData();
+
+        // Only append fields that have values (partial update)
+        if (payload.name) formData.append("name", payload.name);
+        if (payload.description)
+          formData.append("description", payload.description);
+        if (payload.location) formData.append("location", payload.location);
+        if (payload.type) formData.append("type", payload.type);
+        if (payload.status) formData.append("status", payload.status);
+
+        // Add new image if provided
+        if (payload.image instanceof File) {
+          formData.append("image", payload.image);
+        }
+
+        // Add _method field for Laravel to handle PUT request
+        formData.append("_method", "PUT");
+
+        const response = await axiosInstance.post(`item/${code}`, payload, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -80,7 +99,7 @@ export const useTicketStore = defineStore("ticket", {
           this.success = response.data.message;
           router.push({
             name: "app.ticket.detail",
-            params: { code: payload.get("code") },
+            params: { code: code }, // Perbaikan: gunakan code dari parameter
           });
         }
       } catch (err) {

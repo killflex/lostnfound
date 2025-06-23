@@ -13,6 +13,7 @@ class Item extends Model
     const TYPE_FOUND = 'found';
     const STATUS_PENDING = 'pending';
     const STATUS_RESOLVED = 'resolved';
+    
     protected $guarded = [
         'id',
         'created_at',

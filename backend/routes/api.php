@@ -15,11 +15,14 @@ Route::prefix('admin')->middleware(['auth:api', 'admin'])->group(function () {
 
 Route::middleware(['auth:api'])->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
+
     Route::put('user', [UserManagementController::class, 'update']);
     Route::get('user', [UserManagementController::class, 'show']);
+
     Route::post('item/{item}/status', [ItemController::class, 'updateStatus']);
-    Route::get('item/{id}/chat', [ChatController::class, 'showCommentsByItem']);
-    Route::post('chat/{id}', [ChatController::class, 'store']);
     Route::apiResource('item', ItemController::class);
+    
+    Route::post('chat/{id}', [ChatController::class, 'store']);
+    Route::get('item/{id}/chat', [ChatController::class, 'showCommentsByItem']);
     Route::apiResource('chat' , ChatController::class);
 });

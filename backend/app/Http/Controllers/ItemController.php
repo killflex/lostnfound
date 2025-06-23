@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreItemRequest;
+use App\Http\Requests\UpdateItemRequest;
 use App\Http\Requests\UpdateStatusItemRequest;
 use App\Models\Item;
 use App\Http\Controllers\Traits\ApiResponse;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -61,13 +63,13 @@ class ItemController extends Controller
     public function store(StoreItemRequest $request)
     {
         $user = JWTAuth::parseToken()->authenticate();    
-        $payload = $request->only(['name', 'description', 'location', 'type']);
+        $payload = $request->only(['name', 'description', 'location', 'type', 'status']);
 
         $path = $request->file('image')->store('images', 'public');
 
         $payload['image'] = basename($path);
         $payload['user_id'] = $user->id;
-        $payload['status'] = Item::STATUS_PENDING;
+        $payload['status'] = $payload['status'] ?? Item::STATUS_PENDING;
 
         $item = Item::create($payload);
 
@@ -81,16 +83,28 @@ class ItemController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreItemRequest $request, Item $item)
+    public function update(UpdateItemRequest $request, Item $item)
     {
-        $payload = $request->validated();
+        $payload = $request->only(['name', 'description', 'location', 'type', 'status']);
+
+        // Handle image upload if new image is provided
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($item->image) {
+                Storage::disk('public')->delete('images/' . $item->image);
+            }
+            
+            // Store new image
+            $path = $request->file('image')->store('images', 'public');
+            $payload['image'] = basename($path);
+        }
 
         $item->update($payload);
 
         return $this->successResponse(
             $item,
-            'Item updated successfully.',
-            201
+            'Laporan berhasil diperbarui.',
+            200
         );
     }
 
