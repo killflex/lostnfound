@@ -27,10 +27,10 @@ watch(
   () => {
     if (statistic.value && chart) {
       chart.data.datasets[0].data = [
-        statistic.value.status_distribution?.open,
-        statistic.value.status_distribution?.onprogress,
+        statistic.value.status_distribution?.lost,
+        statistic.value.status_distribution?.found,
+        statistic.value.status_distribution?.pending,
         statistic.value.status_distribution?.resolved,
-        statistic.value.status_distribution?.rejected,
       ];
       chart.update();
     }
@@ -48,16 +48,16 @@ onMounted(async () => {
     chart = new Chart(statusCtx, {
       type: "doughnut",
       data: {
-        labels: ["open", "onprogress", "resolved", "rejected"],
+        labels: ["lost", "found", "pending", "resolved"],
         datasets: [
           {
             data: [
-              statistic.value.status_distribution?.open,
-              statistic.value.status_distribution?.onprogress,
+              statistic.value.status_distribution?.lost,
+              statistic.value.status_distribution?.found,
+              statistic.value.status_distribution?.pending,
               statistic.value.status_distribution?.resolved,
-              statistic.value.status_distribution?.rejected,
             ],
-            backgroundColor: ["#3b82f6", "#f59e0b", "#10b981", "#ef4444"],
+            backgroundColor: ["#ef4444", "#3b82f6", "#f59e0b", "#10b981"],
           },
         ],
       },
@@ -182,31 +182,53 @@ onMounted(async () => {
         <div class="p-6 border-b border-gray-100">
           <div class="flex items-center justify-between">
             <h3 class="text-lg font-semibold text-gray-800">Tiket Terbaru</h3>
-            <a
-              href="#"
-              class="text-sm text-blue-600 hover:text-blue-800 font-medium"
-              >Lihat Semua</a
-            >
           </div>
         </div>
         <div class="divide-y divide-gray-100">
           <!-- Ticket Item 1 -->
           <div
             v-for="ticket in tickets"
-            :key="ticket.code"
+            :key="ticket.id"
             class="p-4 hover:bg-gray-50"
           >
             <div class="flex items-center justify-between">
               <div>
                 <h4 class="text-sm font-medium text-gray-800">
-                  {{ ticket.title }}
+                  {{ ticket.name }}
                 </h4>
-                <p class="text-xs text-gray-500 mt-1">#{{ ticket.code }}</p>
+                <!-- <p class="text-xs text-gray-500 mt-1">#{{ ticket.id }}</p> -->
                 <div class="flex items-center mt-2 space-x-2">
                   <span
-                    class="px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-full"
+                    class="px-2 py-1 font-medium text-xs rounded-full"
+                    :class="{
+                      'text-red-700 bg-red-100': ticket.type === 'lost',
+                      'text-blue-700 bg-blue-100': ticket.type === 'found',
+                    }"
                   >
-                    {{ capitalize(ticket.status) }}
+                    {{
+                      ticket.type === "lost"
+                        ? "Barang Hilang"
+                        : ticket.type === "found"
+                        ? "Barang Temuan"
+                        : ""
+                    }}
+                  </span>
+                  <span
+                    class="px-2 py-1 font-medium text-xs rounded-full"
+                    :class="{
+                      'text-yellow-700 bg-yellow-100':
+                        ticket.status === 'pending',
+                      'text-green-700 bg-green-100':
+                        ticket.status === 'resolved',
+                    }"
+                  >
+                    {{
+                      ticket.status === "resolved"
+                        ? "Kasus Terselesaikan"
+                        : ticket.status === "pending"
+                        ? "Dalam Pencarian"
+                        : ""
+                    }}
                   </span>
                   <span class="text-xs text-gray-500">
                     {{ DateTime.fromISO(ticket.created_at).toRelative() }}
@@ -225,7 +247,7 @@ onMounted(async () => {
                   class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-50"
                 >
                   <a
-                    :href="`/ticket/${ticket.code}`"
+                    :href="`/ticket/${ticket.id}`"
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                   >
                     <i data-feather="eye" class="w-4 h-4 inline-block mr-2"></i>

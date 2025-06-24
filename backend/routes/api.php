@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('register', [AuthController::class, 'register']);
@@ -14,6 +15,8 @@ Route::prefix('admin')->middleware(['auth:api', 'admin'])->group(function () {
 });
 
 Route::middleware(['auth:api'])->group(function () {
+    Route::get('/dashboard/statistics', [DashboardController::class, 'getStatistics']);
+
     Route::post('logout', [AuthController::class, 'logout']);
 
     Route::get('user', [UserManagementController::class, 'show']);

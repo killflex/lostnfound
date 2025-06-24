@@ -1,18 +1,22 @@
-import Admin from "@/layouts/Admin.vue";
-import Auth from "@/layouts/Auth.vue";
 import { useAuthStore } from "@/stores/auth";
+import { createRouter, createWebHistory } from "vue-router";
+
+import Admin from "@/layouts/Admin.vue";
 import Dashboard from "@/views/admin/Dashboard.vue";
 import TicketList from "@/views/admin/ticket/TicketList.vue";
 import TicketDetail from "@/views/admin/ticket/TicketDetail.vue";
-import Login from "@/views/auth/Login.vue";
-import { createRouter, createWebHistory } from "vue-router";
+
 import App from "@/layouts/App.vue";
+import Auth from "@/layouts/Auth.vue";
+
+import Login from "@/views/auth/Login.vue";
+import Register from "@/views/auth/Register.vue";
+
+import AppProfile from "@/views/app/Profile.vue";
 import AppDashboard from "@/views/app/Dashboard.vue";
 import AppTicketDetail from "@/views/app/TicketDetail.vue";
-import AppTicketEdit from "@/views/app/TicketEdit.vue";
 import AppTicketCreate from "@/views/app/TicketCreate.vue";
-import Register from "@/views/auth/Register.vue";
-import AppProfile from "@/views/app/Profile.vue";
+import AppTicketEdit from "@/views/app/TicketEdit.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
