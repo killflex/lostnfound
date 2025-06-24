@@ -2,8 +2,8 @@
 import { onMounted, ref } from "vue";
 import { useTicketStore } from "@/stores/ticket";
 import { storeToRefs } from "pinia";
-import feather from "feather-icons";
 import { useRoute, useRouter } from "vue-router";
+import feather from "feather-icons";
 
 const route = useRoute();
 const router = useRouter();
@@ -71,18 +71,11 @@ const handleSubmit = async () => {
     formData.append("type", form.value.type);
     formData.append("status", form.value.status);
     formData.append("_method", "put");
-    // Berikan nilai default
 
     // Jika ada image baru, gunakan itu
     if (form.value.image) {
       formData.append("image", form.value.image);
     }
-    // Jika tidak ada image baru tapi ada preview (image lama), kirim URL-nya
-    // else if (previewUrl.value) {
-    //   const response = await fetch(previewUrl.value);
-    //   const blob = await response.blob();
-    //   formData.append("image", blob, "existing-image.jpg");
-    // }
 
     await editTicket(route.params.code, formData);
 

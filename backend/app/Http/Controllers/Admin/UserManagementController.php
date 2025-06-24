@@ -50,22 +50,32 @@ class UserManagementController extends Controller
      */
     public function update(UpdateUserRequest $request)
     {
-        $user = auth()->user();
-
-        $user->name = $request->name;
-        $user->email = $request->email;
-
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
+        try {
+            $user = auth()->user();
+            
+            $payload = $request->only(['name', 'email']);
+    
+            // Only update password if provided
+            if ($request->filled('password')) {
+                $payload['password'] = Hash::make($request->password);
+            }
+    
+            // Update user
+            $user->update($payload);
+    
+            // Return response without password
+            return $this->successResponse(
+                $user,
+                'Profile updated successfully.',
+                200
+            );
+    
+        } catch (\Exception $e) {
+            return $this->errorResponse(
+                'Failed to update profile.',
+                500
+            );
         }
-
-        $user->save();
-
-        return $this->successResponse(
-            $user,
-            'User updated successfully.',
-            200
-        );
     }
 
     /**
@@ -77,7 +87,8 @@ class UserManagementController extends Controller
 
         return $this->successResponse(
             null,
-            'User deleted successfully.'
+            'User deleted successfully.',
+            200
         );
     }
 }

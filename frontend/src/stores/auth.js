@@ -96,6 +96,55 @@ export const useAuthStore = defineStore("auth", {
       }
     },
 
+    async updateCurrentUser(payload) {
+      this.loading = true;
+      this.error = null;
+
+      try {
+        if (!payload || Object.keys(payload).length === 0) {
+          this.error = {
+            general: ["No data provided to update."],
+          };
+          return;
+        }
+
+        // Create FormData if payload contains password
+        const data = payload.password ? new FormData() : payload;
+
+        if (payload.password) {
+          Object.keys(payload).forEach((key) => {
+            data.append(key, payload[key]);
+          });
+        }
+
+        const response = await axiosInstance.put("/user", data, {
+          headers: {
+            "Content-Type": payload.password
+              ? "multipart/form-data"
+              : "application/json",
+          },
+        });
+
+        if (response.data.success) {
+          // Update user state
+          this.user = response.data.data;
+          this.success = response.data.message;
+
+          // Refresh token if email was changed
+          if (payload.email && payload.email !== this.user.email) {
+            await this.checkAuth();
+          }
+        }
+
+        return response.data;
+      } catch (error) {
+        this.error = handleError(error);
+        return null;
+      } finally {
+        this.loading = false;
+      }
+    },
+
     async checkAuth() {
       if (!this.token) {
         this.user = null;
