@@ -13,31 +13,50 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = ['A', 'B', 'C'];
-
         $now = Carbon::now();
-        $items = [];
+        $users = [
+            [
+                'name'  => 'Admin LostFound',
+                'email' => 'admin@lostnfound.local',
+                'role'  => 'admin',
+            ],
+            [
+                'name'  => 'Raka Pratama',
+                'email' => 'raka.pratama@mail.test',
+                'role'  => 'user',
+            ],
+            [
+                'name'  => 'Siti Aulia',
+                'email' => 'siti.aulia@mail.test',
+                'role'  => 'user',
+            ],
+            [
+                'name'  => 'Bima Saputra',
+                'email' => 'bima.saputra@mail.test',
+                'role'  => 'user',
+            ],
+            [
+                'name'  => 'Nadya Putri',
+                'email' => 'nadya.putri@mail.test',
+                'role'  => 'user',
+            ],
+        ];
 
-        foreach ($users as $user) {
-            $items[] = [
-                'name'       => "User Test {$user}",
-                'email'      => "usertest{$user}@email.com",
-                'password'   => bcrypt('usertest123'),
-                'role'       => 'user',
-                'created_at' => $now,
-                'updated_at' => $now,
+        $rows = [];
+
+        foreach ($users as $index => $user) {
+            $createdAt = $now->copy()->subDays(20 - ($index * 3));
+
+            $rows[] = [
+                'name'       => $user['name'],
+                'email'      => $user['email'],
+                'password'   => bcrypt('password123'),
+                'role'       => $user['role'],
+                'created_at' => $createdAt,
+                'updated_at' => $createdAt,
             ];
         }
 
-        $items[] = [
-            'name'       => 'Admin',
-            'email'      => 'admin@example.com',
-            'password'   => bcrypt('admintest123'),
-            'role'       => 'admin',
-            'created_at' => $now,
-            'updated_at' => $now,
-        ];
-
-        DB::table('users')->insert($items);
+        DB::table('users')->insert($rows);
     }
 }
